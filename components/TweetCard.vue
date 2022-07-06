@@ -1,26 +1,31 @@
 <template>
-    <div v-if="isPublic(tweet)">
-        <p>user:{{tweet.user_id}}</p>
-        <p>tweet no.{{tweet.id}}</p>
-        <p @click="addLike(tweet)">{{tweet.like_count}} likes</p>
-        <p v-if="!editable" @click="toggleEdit()">{{tweet.text}}</p>
+    <div v-if="isPublic(thisTweet)">
+        <p>user:{{thisTweet.user_id}}</p>
+        <p>tweet no.{{thisTweet.id}}</p>
+        <a @click="toggleLike(thisTweet)">{{thisTweet.like_count}} likes     </a>
+        <a v-if="!liked">☆</a>
+        <a v-if="liked">★</a>
+        <p v-if="!editable" @click="toggleEdit()">{{thisTweet.text}}</p>
 
-        <form @submit.prevent="updateText(tweet)" v-if="editable" >
-            <input :placeholder="tweet.text" v-model="text" />
+        <form @submit.prevent="updateText(thisTweet)" v-if="editable" >
+            <input :placeholder="thisTweet.text" v-model="text" />
             <button type="submit">submit</button>
         </form>
         
-        <button @click="deleteTweet(tweet)">delete</button>
+        <button @click="deleteTweet(thisTweet)">delete</button>
         <p>------------------------------</p>
     </div>
 </template>
 
 <script setup>
-let editable = ref(false)
+const editable = ref(false)
+const liked = ref(false)
 const text = ref()
+const thisTweet = ref(props.tweet)
 // 親から受け取る値
 const props = defineProps({
-    tweet: Object
+    tweet: Object,
+    authUser: Object
 })
 // 親が購読している値
 const emit = defineEmits()
@@ -33,7 +38,7 @@ const updateText = (tweet) => {
         console.log(e)
     }).then(() => {
         toggleEdit()
-        emit("refreshAll")
+        refreshTweet(tweet) 
     })
 }
 
@@ -43,17 +48,40 @@ const deleteTweet = (tweet) => {
     }).catch(e => {
         console.log(e)
     }).then(() => {
-        emit("refreshAll")
+        emit('refreshAll')
     })
 }
 
-const addLike = (tweet) => {
-    $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
-        method: 'POST'
-    }).catch(e => {
+const toggleLike = (tweet) => {
+    if (liked.value) {
+        $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
+            method: 'DELETE',
+            body: {user_id: props.authUser.id}
+        }).catch(e => {
+            console.log(e)
+        }).then(() => {
+            liked.value = !liked.value
+            refreshTweet(tweet)
+        })
+    } else {
+        $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
+            method: 'POST',
+            body: {user_id: props.authUser.id}
+        }).catch(e => {
+            console.log(e)
+        }).then(() => {
+            liked.value = !liked.value
+            refreshTweet(tweet)
+        })
+    }
+}
+
+const refreshTweet = (tweet) => {
+    $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}`)
+    .catch(e => {
         console.log(e)
-    }).then(() => {
-        emit("refreshAll")
+    }).then((res) => {
+        thisTweet.value = res
     })
 }
 
@@ -64,4 +92,8 @@ const isPublic = (tweet) => {
 const toggleEdit = () => {
     editable.value = !editable.value
 }
+
+onMounted(() => {
+    liked.value = props.tweet.user_id == props.authUser.id
+})
 </script>
