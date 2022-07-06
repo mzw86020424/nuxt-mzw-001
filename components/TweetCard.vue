@@ -53,27 +53,15 @@ const deleteTweet = (tweet) => {
 }
 
 const toggleLike = (tweet) => {
-    if (liked.value) {
-        $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
-            method: 'DELETE',
-            body: {user_id: props.authUser.id}
-        }).catch(e => {
-            console.log(e)
-        }).then(() => {
-            liked.value = !liked.value
-            refreshTweet(tweet)
-        })
-    } else {
-        $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
-            method: 'POST',
-            body: {user_id: props.authUser.id}
-        }).catch(e => {
-            console.log(e)
-        }).then(() => {
-            liked.value = !liked.value
-            refreshTweet(tweet)
-        })
-    }
+    $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
+        method: liked.value ? 'DELETE':'POST', // likeされているか否かで分岐
+        body: {user_id: props.authUser.id}
+    }).catch(e => {
+        console.log(e)
+    }).then(() => {
+        liked.value = !liked.value
+        refreshTweet(tweet)
+    })
 }
 
 const refreshTweet = (tweet) => {
