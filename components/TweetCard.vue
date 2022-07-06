@@ -64,7 +64,6 @@ const toggleLike = (tweet) => {
     if (isMine) {
         return
     }
-
     $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
         method: liked.value ? 'DELETE':'POST', // likeされているか否かで分岐
         body: {user_id: props.authUser.id}
