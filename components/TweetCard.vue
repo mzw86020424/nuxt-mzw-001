@@ -1,5 +1,6 @@
 <template>
     <div>
+        <p>------------------------------</p>
         <h1 v-if="!editable && isMine" @click="toggleEdit()">{{thisTweet.text}}</h1>
         <h1 v-if="!editable && !isMine">{{thisTweet.text}}</h1>
 
@@ -17,7 +18,6 @@
         </div>
 
         <button v-if="isMine" @click="deleteTweet(thisTweet)">delete</button>
-        <p>------------------------------</p>
     </div>
 </template>
 
@@ -25,7 +25,7 @@
 // 親から受け取る値
 const props = defineProps({
     tweet: Object,
-    authUser: Object
+    authNUser: Object
 })
 
 const editable = ref(false)
@@ -33,7 +33,7 @@ const thisTweet = ref(props.tweet)
 const liked = ref(thisTweet.value.liked_by_me) // 誰にライクされたかを初期値に持ってこないといけない
 const text = ref(thisTweet.value.text)
 
-const isMine = props.tweet.user_id == props.authUser.id
+const isMine = props.tweet.user_id == props.authNUser.id
 
 // 親が購読している値
 const emit = defineEmits()
@@ -66,7 +66,7 @@ const toggleLike = (tweet) => {
     }
     $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
         method: liked.value ? 'DELETE':'POST', // likeされているか否かで分岐
-        body: {user_id: props.authUser.id}
+        body: {user_id: props.authNUser.id}
     }).catch(e => {
         console.log(e)
     }).then(() => {

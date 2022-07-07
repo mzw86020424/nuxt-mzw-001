@@ -11,7 +11,7 @@
 <script setup>
 // 親から受け取る値
 const props = defineProps({
-    authUser: Object
+    authNUser: Object
 })
 const text = ref("")
 const formVisible = ref(false)
@@ -23,7 +23,7 @@ const createTweet = () => {
     $fetch(`http://localhost:3000/api/v1/tweets`, {
         method: 'POST',
         body: {
-            user_id: props.authUser.id,
+            user_id: props.authNUser.id,
             text: text.value,
             status: "public"
             }
