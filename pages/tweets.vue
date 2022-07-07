@@ -6,6 +6,10 @@
 </template>
 
 <script setup>
-const authNUser = {id: 1} // 仮のauthUser
+const authNUser = ref({id:""})
 const { data: tweets, refresh } = await useFetch(`http://localhost:3000/api/v1/tweets`)
+
+onMounted(() => {
+    authNUser.value = JSON.parse(localStorage.getItem('me'));
+})
 </script>
