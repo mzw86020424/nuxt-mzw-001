@@ -25,7 +25,7 @@
 // 親から受け取る値
 const props = defineProps({
     tweet: Object,
-    authNUser: Object
+    authUser: Object
 })
 
 const editable = ref(false)
@@ -33,7 +33,7 @@ const thisTweet = ref(props.tweet)
 const liked = ref(thisTweet.value.liked_by_me) // 誰にライクされたかを初期値に持ってこないといけない
 const text = ref(thisTweet.value.text)
 
-const isMine = props.tweet.user_id == props.authNUser.id
+const isMine = props.tweet.user_id == props.authUser.id
 
 // 親が購読している値
 const emit = defineEmits()
@@ -41,7 +41,8 @@ const emit = defineEmits()
 const updateText = (tweet) => {
     $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}`, {
         method: 'PUT',
-        body: {text: text.value}
+        body: {text: text.value},
+        headers: {"Authorization" : `Bearer ${props.authUser.token}`}
     }).catch(e => {
         console.log(e)
     }).then(() => {
@@ -52,7 +53,8 @@ const updateText = (tweet) => {
 
 const deleteTweet = (tweet) => {
     $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: {"Authorization" : `Bearer ${props.authUser.token}`}
     }).catch(e => {
         console.log(e)
     }).then(() => {
@@ -66,7 +68,8 @@ const toggleLike = (tweet) => {
     }
     $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
         method: liked.value ? 'DELETE':'POST', // likeされているか否かで分岐
-        body: {user_id: props.authNUser.id}
+        body: {user_id: props.authUser.id},
+        headers: {"Authorization" : `Bearer ${props.authUser.token}`}
     }).catch(e => {
         console.log(e)
     }).then(() => {
@@ -76,7 +79,9 @@ const toggleLike = (tweet) => {
 }
 
 const refreshTweet = (tweet) => {
-    $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}`)
+    $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}`, {
+        headers: {"Authorization" : `Bearer ${props.authUser.token}`}
+    })
     .catch(e => {
         console.log(e)
     }).then((res) => {

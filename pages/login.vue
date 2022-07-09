@@ -13,10 +13,8 @@ const email = ref("")
 const password = ref("")
 const showMessage = ref(false)
 
-const {me, setMe} = useAuth();
-
 const logIn = () => {
-    $fetch(`http://localhost:3000/api/v1/auth/sign_in`, {
+    $fetch(`http://localhost:3000/api/v1/login/login`, {
         method: 'POST',
         body: {
             email: email.value,
@@ -25,8 +23,11 @@ const logIn = () => {
     }).catch(e => {
         console.log(e)
     }).then((res) => {
-        setMe(res.data)
-        localStorage.setItem('me', JSON.stringify(res.data))
+        const data = {
+            id: res.id,
+            token: res.token
+        }
+        localStorage.setItem('me', JSON.stringify(data))
         console.log(JSON.parse(localStorage.getItem('me')))
         showMessage.value = true
     })
