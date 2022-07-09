@@ -11,7 +11,7 @@
 <script setup>
 // 親から受け取る値
 const props = defineProps({
-    authUser: Object
+    authUser: {}
 })
 const text = ref("")
 const formVisible = ref(false)
@@ -27,13 +27,13 @@ const createTweet = () => {
             text: text.value,
             status: "public"
             },
-        headers: {"Authorization" : authUser.value.token}
+        headers: {"Authorization" : `Bearer ${props.authUser.token}`}
     }).catch(e => {
         console.log(e)
     }).then(() => {
-        toggleFormVisible()
-        text.value = ""
-        emit('refreshAll')
+        toggleFormVisible();
+        emit('refreshAll');
+        text.value = "";
     })
 }
 

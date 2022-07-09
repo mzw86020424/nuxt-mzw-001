@@ -1,15 +1,16 @@
 <template>
-    <new-tweet :authUser="authUser" @refreshAll="refresh"></new-tweet>
+    <new-tweet :authUser="authUser" @refreshAll="getTweets()"></new-tweet>
     <div v-for="tweet in tweets" :key="tweet.id">
         <tweet-card :tweet="tweet" :authUser="authUser" @refreshAll="getTweets()"></tweet-card>
     </div>
 </template>
 
 <script setup>
-const authUser = ref({id:"", token:""})
+const authUser = ref()
 const tweets = ref()
 
 const getTweets = () => {
+    console.log("get tweets")
     $fetch("http://localhost:3000/api/v1/tweets", {
         headers: {"Authorization" : `Bearer ${authUser.value.token}`}
     }).catch(e => {
