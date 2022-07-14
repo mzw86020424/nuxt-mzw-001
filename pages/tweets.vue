@@ -1,4 +1,5 @@
 <template>
+    <h1>User : {{ authUser.id }}</h1>
     <new-tweet :authUser="authUser" @refreshAll="getTweets()"></new-tweet>
     <div v-for="tweet in tweets" :key="tweet.id">
         <tweet-card :tweet="tweet" :authUser="authUser" @refreshAll="getTweets()"></tweet-card>
@@ -6,7 +7,7 @@
 </template>
 
 <script setup>
-const authUser = ref()
+const authUser = ref({ id :"" })
 const tweets = ref()
 
 const getTweets = () => {

@@ -1,42 +1,40 @@
 <template>
     <div>
         <p>------------------------------</p>
-        <h1 v-if="!editable && isMine" @click="toggleEdit()">{{thisTweet.text}}</h1>
-        <h1 v-if="!editable && !isMine">{{thisTweet.text}}</h1>
+        <h1 v-if="!editable && isMine" @click="toggleEdit()">{{tweet.text}}</h1>
+        <h1 v-if="!editable && !isMine">{{tweet.text}}</h1>
 
-        <form v-if="editable" @submit.prevent="updateText(thisTweet)">
+        <form v-if="editable" @submit.prevent="updateText(tweet)">
             <input v-model="text" />
             <button type="submit">submit</button>
         </form>
 
-        <p>user:{{thisTweet.user_id}}</p>
+        <p>user:{{tweet.user_id}}</p>
 
-        <p>{{thisTweet.like_count}} likes     </p>
-        <div v-if="!isMine" @click="toggleLike(thisTweet)">
+        <p>{{tweet.like_count}} likes     </p>
+        <div v-if="!isMine" @click="toggleLike(tweet)">
             <a v-if="liked">★</a>
             <a v-if="!liked">☆</a>
         </div>
 
-        <button v-if="isMine" @click="deleteTweet(thisTweet)">delete</button>
+        <button v-if="isMine" @click="deleteTweet(tweet)">delete</button>
     </div>
 </template>
 
 <script setup>
 // 親から受け取る値
 const props = defineProps({
-    tweet: Object,
-    authUser: Object
+    tweet: {},
+    authUser: {}
 })
-
-const editable = ref(false)
-const thisTweet = ref(props.tweet)
-const liked = ref(thisTweet.value.liked_by_me) // 誰にライクされたかを初期値に持ってこないといけない
-const text = ref(thisTweet.value.text)
-
-const isMine = props.tweet.user_id == props.authUser.id
-
 // 親が購読している値
 const emit = defineEmits()
+
+const thisTweet = ref(props.tweet)
+const editable = ref(false)
+const liked = ref(props.tweet.liked_by_me)
+const text = ref(props.tweet.text)
+const isMine = props.tweet.user_id == props.authUser.id
 
 const updateText = (tweet) => {
     $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}`, {
@@ -63,9 +61,7 @@ const deleteTweet = (tweet) => {
 }
 
 const toggleLike = (tweet) => {
-    if (isMine) {
-        return
-    }
+    console.log(liked.value ? 'DELETE':'POST')
     $fetch(`http://localhost:3000/api/v1/tweets/${tweet.id}/likes`, {
         method: liked.value ? 'DELETE':'POST', // likeされているか否かで分岐
         body: {user_id: props.authUser.id},
@@ -85,13 +81,13 @@ const refreshTweet = (tweet) => {
     .catch(e => {
         console.log(e)
     }).then((res) => {
-        thisTweet.value = res
+        // TODO: 更新時にthisTweetに中身が入らない問題
+        console.log(res.tweet)
+        thisTweet.value = res.tweet
     })
 }
 
 const toggleEdit = () => {
-    if (isMine) {
     editable.value = !editable.value
-    }
 }
 </script>

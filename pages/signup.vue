@@ -16,6 +16,7 @@ const password = ref("")
 const showMessage = ref(false)
 
 const signUp = () => {
+    localStorage.clear()
     $fetch(`http://localhost:3000/api/v1/users`, {
         method: 'POST',
         body: {

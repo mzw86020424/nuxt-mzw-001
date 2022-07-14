@@ -15,6 +15,7 @@ const showMessage = ref(false)
 const me = ref()
 
 const logIn = () => {
+    localStorage.clear()
     $fetch(`http://localhost:3000/api/v1/login/login`, {
         method: 'POST',
         body: {
