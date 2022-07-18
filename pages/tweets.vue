@@ -2,7 +2,13 @@
     <h1>User : {{ authUser.id }}</h1>
     <new-tweet :authUser="authUser" @refreshAll="getTweets()"></new-tweet>
     <div v-for="tweet in tweets" :key="tweet.id">
-        <tweet-card :tweet="tweet" :authUser="authUser" @refreshAll="getTweets()"></tweet-card>
+        <tweet-card
+        :tweet="tweet.tweet"
+        :liked_by_me="tweet.liked_by_me"
+        :like_count="tweet.like_count"
+        :authUser="authUser"
+        @refreshAll="getTweets()">
+        </tweet-card>
     </div>
 </template>
 
@@ -11,7 +17,6 @@ const authUser = ref({ id :"" })
 const tweets = ref()
 
 const getTweets = () => {
-    console.log("get tweets")
     $fetch("http://localhost:3000/api/v1/tweets", {
         headers: {"Authorization" : `Bearer ${authUser.value.token}`}
     }).catch(e => {
