@@ -10,8 +10,8 @@
 
         <p>user:{{tweet.user_id}}</p>
         <p>{{like_count ? like_count : 0}} likes</p>
-        <p v-if="!isMine&&!liked_by_me" @click="toggleLike()">☆</p>
-        <p v-if="!isMine&&liked_by_me" @click="toggleLike()">★</p>
+        <p v-if="!isMine&&!liked_by_me" @click="toggleLike()">🤍</p>
+        <p v-if="!isMine&&liked_by_me" @click="toggleLike()">💜</p>
 
         <button v-if="isMine" @click="deleteTweet()">delete</button>
     </div>
@@ -30,7 +30,6 @@ const props = defineProps({
 
 const editable = ref(false)
 const newText = ref(props.tweet.text)
-const likable = ref(true)
 
 const updateText = () => {
     $fetch(`http://localhost:3000/api/v1/tweets/${props.tweet.id}`, {
