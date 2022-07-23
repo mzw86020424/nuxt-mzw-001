@@ -7,6 +7,7 @@
         :liked_by_me="tweet.liked_by_me"
         :like_count="tweet.like_count"
         :authUser="authUser"
+        :followed_by_me="tweet.followed_by_me"
         @refreshAll="getTweets()">
         </tweet-card>
     </div>

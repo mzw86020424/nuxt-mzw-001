@@ -8,7 +8,13 @@
             <button type="submit">submit</button>
         </form>
 
-        <p>user:{{tweet.user_id}}</p>
+        <p>
+            user:{{tweet.user_id}}
+            <a v-if="followed_by_me&&!isMine">☆</a>
+        </p>
+        <button v-if="!followed_by_me&&!isMine" @click="toggleFollow()">follow</button>
+        <button v-if="followed_by_me&&!isMine" @click="toggleFollow()">unfollow</button>
+
         <p>{{like_count ? like_count : 0}} likes</p>
         <p v-if="!isMine&&!liked_by_me" @click="toggleLike()">🤍</p>
         <p v-if="!isMine&&liked_by_me" @click="toggleLike()">💜</p>
@@ -25,6 +31,7 @@ const props = defineProps({
     tweet: Object,
     like_count: Number,
     liked_by_me: Boolean,
+    followed_by_me: Boolean,
     authUser: Object
 })
 
@@ -60,6 +67,19 @@ const toggleLike = () => {
     $fetch(`http://localhost:3000/api/v1/tweets/${props.tweet.id}/likes`, {
         method: method,
         body: {user_id: props.authUser.id},
+        headers: {"Authorization" : `Bearer ${props.authUser.token}`}
+    }).catch(e => {
+        console.log(e)
+    }).then(() => {
+        emit('refreshAll')
+    })
+}
+
+const toggleFollow = () => {
+    const method = props.followed_by_me ? "DELETE" : "POST";
+    $fetch(`http://localhost:3000/api/v1/users/${props.authUser.id}/relationships`, {
+        method: method,
+        body: {followee_id: props.tweet.user_id},
         headers: {"Authorization" : `Bearer ${props.authUser.token}`}
     }).catch(e => {
         console.log(e)
