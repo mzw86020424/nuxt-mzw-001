@@ -27,7 +27,8 @@ const logIn = () => {
     }).then((res) => {
         const data = {
             id: res.id,
-            token: res.token
+            token: res.token,
+            name: res.name
         }
         localStorage.setItem('me', JSON.stringify(data))
         me.value = JSON.parse(localStorage.getItem('me'))

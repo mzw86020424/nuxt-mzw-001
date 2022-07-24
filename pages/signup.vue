@@ -29,7 +29,8 @@ const signUp = () => {
     }).then((res) => {
         const data = {
             id: res.id,
-            token: res.token
+            token: res.token,
+            name: res.name
         }
         localStorage.setItem('me', JSON.stringify(data))
         showMessage.value = true

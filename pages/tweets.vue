@@ -1,5 +1,5 @@
 <template>
-    <h1>User : {{ authUser.id }}</h1>
+    <h1>User : {{ authUser.name }}</h1>
     <new-tweet :authUser="authUser" @refreshAll="getTweets()"></new-tweet>
     <div v-for="tweet in tweets" :key="tweet.id">
         <tweet-card
