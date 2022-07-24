@@ -1,14 +1,16 @@
 <template>
     <h1> welcome {{ authUser.name }}</h1>
-    <div v-for="user in users" :key="user.id">
-        <p>----------------------------------</p>
-        <p>{{user.name}}</p>
-            <!-- <tweet-card
-            :tweet="tweet.tweet"
-            :authUser="authUser"
-            :followed_by_me="tweet.followed_by_me"
-            @refreshAll="getTweets()">
-            </tweet-card> -->
+    <div v-for="user in users" :key="user.user.id">
+        <user-card
+        :user="user.user"
+        :authUser="authUser"
+        :followsMe="user.follows_me"
+        :followedByMe="user.followed_by_me"
+        :followerCount="user.follower_count"
+        :followeeCount="user.followee_count"
+        :tweetCount="user.tweet_count"
+        @refreshAll="getUsers()">
+        </user-card>
     </div>
 </template>
 
