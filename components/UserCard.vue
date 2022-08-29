@@ -3,8 +3,8 @@
         <h1>{{user.name}}</h1>
         <h3>ツイート数 {{tweetCount}}</h3>
         <p>{{followeeCount}}フォロー  {{followerCount}}フォロワー</p>
-        <b v-if="followedByMe" @click="toggleFollow()">フォローしています</b>
-        <b v-if="!followedByMe" @click="toggleFollow()">フォローする</b>
+        <button v-if="!followedByMe" @click="toggleFollow()">follow</button>
+        <button v-if="followedByMe" @click="toggleFollow()">unfollow</button>
         <h6 v-if="followsMe">フォローされています</h6>
     </div>
 </template>

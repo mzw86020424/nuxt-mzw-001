@@ -8,7 +8,7 @@
         :followerCount="user.follower_count"
         :followeeCount="user.followee_count"
         :tweetCount="user.tweet_count"
-        @refreshAll="getUsers()">
+        @refreshAll="getUser()">
         </user-card>
     </div>
 </template>
