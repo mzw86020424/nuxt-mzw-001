@@ -1,6 +1,7 @@
 <template>
     <h1> welcome {{ authUser.name }}</h1>
     <div v-for="user in users" :key="user.user.id">
+        <p>------------------------------</p>
         <user-card
         :user="user.user"
         :authUser="authUser"

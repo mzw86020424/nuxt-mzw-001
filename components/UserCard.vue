@@ -1,6 +1,5 @@
 <template>
     <div v-if="authUser.id != user.id">
-        <p>------------------------------</p>
         <h1>{{user.name}}</h1>
         <h3>ツイート数 {{tweetCount}}</h3>
         <p>{{followeeCount}}フォロー  {{followerCount}}フォロワー</p>
